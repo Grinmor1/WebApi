@@ -31,9 +31,9 @@ namespace WebApi
         {
             var con = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<BasicEntityRepository>(options => options.UseSqlServer(con));
+            services.AddDbContext<IContext<User>,UserContext>(options => options.UseSqlServer(con));
 
-            services.AddTransient<EntityRepository<User>>();
+            services.AddTransient<IEntityRepository<User>, EntityRepository<User>>();
 
             services.AddScoped<IUserService, UserService>();
 

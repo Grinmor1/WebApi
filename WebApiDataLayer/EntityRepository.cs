@@ -6,59 +6,59 @@ using WebApiDataLayer.Models;
 
 namespace WebApiDataLayer
 {
-
+    //This architecture does not allow migrations 
     public sealed class EntityRepository<T> : IEntityRepository<T> where T : class, IDataBaseModel
     {
-        private readonly UserContext _userContext;
-        public EntityRepository(UserContext userContext)
+        private readonly IContext<T> _context;
+        public EntityRepository(IContext<T> context)
         {
-            _userContext = userContext;
+            _context = context;
         }
 
         public async Task<IEnumerable<T>> Get()
         {
-            return await _userContext.DbSet.ToListAsync();
+            return await _context.DbSet.ToListAsync();
         }
 
         public async Task<T> GetById(int id)
         {
-            return await DbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.DbSet.FirstOrDefaultAsync(x => x.Id == id);
 
         }
 
         public async Task Create(T model)
         {
-            DbSet.Add(model);
-            await SaveChangesAsync();
+            _context.DbSet.Add(model);
+            await Save();
         }
 
         public async Task Update(T model)
         {
-            DbSet.Update(model);
-            await SaveChangesAsync();
+            _context.DbSet.Update(model);
+            await Save();
         }
 
         public async Task Remove(T model)
         {
-            DbSet.Remove(model);
-            await SaveChangesAsync();
+            _context.DbSet.Remove(model);
+            await Save();
         }
 
-        public Task Save()
+        public async Task Save()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
-        private bool disposed = false;
-        public virtual void Dispose(bool disposing)
+        private bool _disposed;
+        public void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
-                    _userContext.Dispose();
+                    _context.Dispose();
                 }
             }
-            this.disposed = true;
+            _disposed = true;
         }
 
         public void Dispose()

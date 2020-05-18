@@ -9,9 +9,9 @@ namespace WebApiBusinessLayer
 {
     public class UserService : IUserService
     {
-        private readonly EntityRepository<User> _entityRepository;
+        private readonly IEntityRepository<User> _entityRepository;
 
-        public UserService(EntityRepository<User> entityRepository)
+        public UserService(IEntityRepository<User> entityRepository)
         {
             _entityRepository = entityRepository;
 
