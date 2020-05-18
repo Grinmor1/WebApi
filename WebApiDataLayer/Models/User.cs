@@ -16,5 +16,6 @@ namespace WebApiDataLayer.Models
 
         [Required(ErrorMessage = "Age must be filled")]
         public int Age { get; set; }
+
     }
 }

@@ -7,18 +7,17 @@ using WebApiDataLayer.Models;
 namespace WebApiDataLayer
 {
 
-    public sealed class EntityRepository<T> : BasicEntityRepository where T : class, IDataBaseModel
+    public sealed class EntityRepository<T> : IEntityRepository<T> where T : class, IDataBaseModel
     {
-        public DbSet<T> DbSet { get; set; }
-        public EntityRepository(DbContextOptions<BasicEntityRepository> options)
-            : base(options)
+        private readonly UserContext _userContext;
+        public EntityRepository(UserContext userContext)
         {
-            
+            _userContext = userContext;
         }
 
         public async Task<IEnumerable<T>> Get()
         {
-            return await DbSet.ToListAsync();
+            return await _userContext.DbSet.ToListAsync();
         }
 
         public async Task<T> GetById(int id)
@@ -43,6 +42,29 @@ namespace WebApiDataLayer
         {
             DbSet.Remove(model);
             await SaveChangesAsync();
+        }
+
+        public Task Save()
+        {
+            throw new NotImplementedException();
+        }
+        private bool disposed = false;
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _userContext.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

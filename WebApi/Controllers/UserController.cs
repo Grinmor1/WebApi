@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using WebApiDataLayer;
 using WebApiDataLayer.Models;
 using WebApiBusinessLayer;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +9,7 @@ using WebApiBusinessLayer;
 namespace WebApi.Controllers
 {
     [ApiController]
+    //[Authorize]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
@@ -59,6 +56,7 @@ namespace WebApi.Controllers
                 return BadRequest(ModelState);
 
             await _userService.CreateUser(user);
+
             return Ok(user);
         }
 
