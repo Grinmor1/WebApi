@@ -6,12 +6,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebApiBusinessLayer;
+using WebApiDataLayer;
+using WebApiDataLayer.Models;
 
-namespace MyCoreWebApi
+namespace WebApi
 {
     public class Startup
     {
@@ -25,6 +29,15 @@ namespace MyCoreWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var con = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<BasicEntityRepository>(options => options.UseSqlServer(con));
+
+            services.AddTransient<EntityRepository<User>>();
+
+            services.AddScoped<IUserService, UserService>();
+
             services.AddControllers();
         }
 
@@ -40,7 +53,7 @@ namespace MyCoreWebApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
