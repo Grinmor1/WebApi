@@ -9,5 +9,10 @@ namespace WebApiBusinessLayer
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetById(int id);
 
+        Task CreateUser(User user);
+        Task UpdateUser(User user);
+
+        Task RemoveUser(User user);
+
     }
 }

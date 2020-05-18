@@ -18,7 +18,6 @@ namespace WebApiBusinessLayer
         }
 
         public async Task<IEnumerable<User>> GetUsers()
-
         {
             return await _entityRepository.Get();
         }
@@ -27,8 +26,21 @@ namespace WebApiBusinessLayer
         public async Task<User> GetById(int id)
         {
            return await _entityRepository.GetById(id);
-           
         }
 
+        public async Task CreateUser(User user)
+        {
+            await _entityRepository.Create(user);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            await _entityRepository.Update(user);
+        }
+
+        public async Task RemoveUser(User user)
+        {
+            await _entityRepository.Remove(user);
+        }
     }
 }

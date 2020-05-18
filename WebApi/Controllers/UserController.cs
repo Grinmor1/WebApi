@@ -41,58 +41,60 @@ namespace WebApi.Controllers
             return new ObjectResult(user);
         }
 
-        //// POST api/users
-        //[HttpPost]
-        //public async Task<ActionResult<User>> Post(User user)
-        //{
-        //    if (user == null)
-        //    {
-        //        return BadRequest();
-        //    }
+        // POST api/users
+        [HttpPost]
+        public async Task<ActionResult<User>> Post(User user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
 
-        //    if (user.Name == "admin")
-        //    {
-        //        ModelState.AddModelError("Name", "Недопустимое имя пользователя - admin");
-        //    }
+            if (user.Name == "admin")
+            {
+                ModelState.AddModelError("Name", "Недопустимое имя пользователя - admin");
+            }
 
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //    _userService.DbSet.Add(user);
-        //    await _userService.SaveChangesAsync();
-        //    return Ok(user);
-        //}
+            await _userService.CreateUser(user);
+            return Ok(user);
+        }
 
-        //// PUT api/users/
-        //[HttpPut]
-        //public async Task<ActionResult<User>> Put(User user)
-        //{
-        //    if (user == null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    if (!_userService.DbSet.Any(x => x.Id == user.Id))
-        //    {
-        //        return NotFound();
-        //    }
+        // PUT api/users/
+        [HttpPut]
+        public async Task<ActionResult<User>> Put(User user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
 
-        //    _userService.Update(user);
-        //    await _userService.SaveChangesAsync();
-        //    return Ok(user);
-        //}
+            var oldUser = _userService.GetById(user.Id);
 
-        //// DELETE api/users/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<User>> Delete(int id)
-        //{
-        //    User user = _userService.DbSet.FirstOrDefault(x => x.Id == id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    _userService.DbSet.Remove(user);
-        //    await _userService.SaveChangesAsync();
-        //    return Ok(user);
-        //}
+            if (oldUser == null)
+            {
+                return NotFound();
+            }
+
+            await _userService.UpdateUser(user);
+
+            return Ok(user);
+        }
+
+        // DELETE api/users/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<User>> Delete(int id)
+        {
+            var user = await _userService.GetById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _userService.RemoveUser(user);
+
+            return Ok(user);
+        }
     }
 }

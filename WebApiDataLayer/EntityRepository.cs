@@ -26,5 +26,23 @@ namespace WebApiDataLayer
             return await DbSet.FirstOrDefaultAsync(x => x.Id == id);
 
         }
+
+        public async Task Create(T model)
+        {
+            DbSet.Add(model);
+            await SaveChangesAsync();
+        }
+
+        public async Task Update(T model)
+        {
+            DbSet.Update(model);
+            await SaveChangesAsync();
+        }
+
+        public async Task Remove(T model)
+        {
+            DbSet.Remove(model);
+            await SaveChangesAsync();
+        }
     }
 }
