@@ -6,47 +6,48 @@ using WebApiDataLayer.Models;
 
 namespace WebApiDataLayer
 {
-    //This architecture does not allow migrations 
-    public sealed class EntityRepository<T> : IEntityRepository<T> where T : class, IDataBaseModel
+    public abstract class EntityRepository<T> : IEntityRepository<T> where T : class, IDataBaseModel
     {
-        private readonly IContext<T> _context;
-        public EntityRepository(IContext<T> context)
+        protected readonly EfDbContext Context;
+        protected abstract DbSet<T> DbSet { get; }
+
+        protected EntityRepository(EfDbContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         public async Task<IEnumerable<T>> Get()
         {
-            return await _context.DbSet.ToListAsync();
+            return await DbSet.ToListAsync();
         }
 
         public async Task<T> GetById(int id)
         {
-            return await _context.DbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await DbSet.FirstOrDefaultAsync(x => x.Id == id);
 
         }
 
         public async Task Create(T model)
         {
-            _context.DbSet.Add(model);
+            Context.Add(model);
             await Save();
         }
 
         public async Task Update(T model)
         {
-            _context.DbSet.Update(model);
+            DbSet.Update(model);
             await Save();
         }
 
         public async Task Remove(T model)
         {
-            _context.DbSet.Remove(model);
+            DbSet.Remove(model);
             await Save();
         }
 
         public async Task Save()
         {
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
         private bool _disposed;
         public void Dispose(bool disposing)
@@ -55,7 +56,7 @@ namespace WebApiDataLayer
             {
                 if (disposing)
                 {
-                    _context.Dispose();
+                    Context.Dispose();
                 }
             }
             _disposed = true;
